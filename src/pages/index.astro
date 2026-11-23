@@ -1,0 +1,51 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import home from '../data/home.json';
+import site from '../data/site.json';
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const recentPosts = allPosts
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, home.recentCount || 4);
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString('en-IN', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+}
+---
+
+<BaseLayout title={site.siteName}>
+  <div class="container">
+
+    <section class="home-hero">
+      <h1>{home.greeting}</h1>
+      <div class="home-bio">
+        {home.tagline && <p>{home.tagline}</p>}
+        {home.interests && <p class="interests">{home.interests}</p>}
+      </div>
+    </section>
+
+    {recentPosts.length > 0 && (
+      <section>
+        <p class="home-section-title">{home.recentTitle}</p>
+        <ul class="home-post-list">
+          {recentPosts.map((post) => (
+            <li class="home-post-item">
+              <a href={`/writing/${post.slug}`}>
+                <div class="post-meta">{formatDate(post.data.date)}</div>
+                <div class="post-title">{post.data.title}</div>
+                <div class="post-desc">{post.data.description}</div>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/writing" class="view-all">All writing →</a>
+      </section>
+    )}
+
+  </div>
+</BaseLayout>

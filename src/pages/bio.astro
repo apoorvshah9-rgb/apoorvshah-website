@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import bio from '../data/bio.json';
+---
+
+<BaseLayout
+  title={bio.title}
+  description="Background and career history of Apoorv Shah — lawyer, teacher, and education leader."
+  activeNav="bio"
+>
+  <div class="container">
+
+    <div class="page-header">
+      <h1>{bio.title}</h1>
+      {bio.intro && <p>{bio.intro}</p>}
+    </div>
+
+    {bio.career.length > 0 && (
+      <section class="bio-section">
+        <h2>{bio.careerTitle}</h2>
+        <ul class="bio-timeline">
+          {bio.career.map((item) => (
+            <li>
+              <span class="bio-year">{item.years}</span>
+              <span class="bio-role">{item.role}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {bio.organisations.length > 0 && (
+      <section class="bio-section">
+        <h2>{bio.orgsTitle}</h2>
+        <ul class="bio-orgs">
+          {bio.organisations.map((org) => (
+            <li>
+              {org.url
+                ? <a href={org.url} target="_blank" rel="noopener noreferrer">{org.name}</a>
+                : org.name}
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+  </div>
+</BaseLayout>
